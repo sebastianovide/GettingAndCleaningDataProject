@@ -52,6 +52,14 @@ dt$activity <- activities
 subjectsId<-read.table(file.path(mergedPath,"subject.txt"))
 dt$subjectId <- subjectsId
 
+
+### 3 ### 
+# Uses descriptive activity names to name the activities in the data set
+activityLabels <- read.table(file.path(dataPath,"activity_labels.txt"), col.names = c('ID', 'activityLabel'))$activityLabel
+activityLabels <- tolower(sub("_", " ", activityLabels))
+dt$activity <- activityLabels[dt$activity[,1]]
+
+
 ### CODE BOOK ###
 # TODO
 #descrip <- c("greendog", "bluecat")

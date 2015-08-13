@@ -15,7 +15,9 @@ The files in ```Inertial Signals``` are ignored as not requested for this excerc
 From the file ```X.txt``` I'm extracting only those columns which label contains the workd "mean" or "std" case insensitive. I am probably adding extra columns, but as it is not clear what means and std are important, I prefer to have extra columns than too little.
 
 
-## 3
+## 3: Uses descriptive activity names to name the activities in the data set
+The ```activity_labels.txt``` file contains the activity names. They just need to be stripped by the undersscore and lowercased.
+
 ## 4
 ## 5
 ## 6
