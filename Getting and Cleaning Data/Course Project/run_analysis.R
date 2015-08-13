@@ -38,7 +38,8 @@ names(features)[1] <- "ID"
 names(features)[2] <- "originalLabel" 
 
 # read original
-dt <- read.table(file.path(mergedPath, "X.txt"), col.names = features[,2])
+dt <- read.table(file.path(mergedPath, "X.txt"))
+names(dt) <-  features[,2]
 
 # remove columns which labels don't contain mean or std
 idxFeaturesWithMeanOrStd <- grep("mean|std", features[,2], ignore.case = TRUE)
@@ -58,6 +59,46 @@ dt$subjectId <- subjectsId
 activityLabels <- read.table(file.path(dataPath,"activity_labels.txt"), col.names = c('ID', 'activityLabel'))$activityLabel
 activityLabels <- tolower(sub("_", " ", activityLabels))
 dt$activity <- activityLabels[dt$activity[,1]]
+
+### 4 ###
+# Appropriately labels the data set with descriptive variable names.
+# remove "-"
+cleanedNames <- gsub("\\-", "", names(dt))
+
+# remove "body" duplication
+cleanedNames <- gsub("bodybody", "Body", cleanedNames, ignore.case = TRUE)
+
+# upper case gravity first character of
+cleanedNames <- gsub("gravity", "Gravity", cleanedNames, ignore.case = TRUE)
+
+# some simple replacements
+cleanedNames <- gsub("t(Body|Gravity)", "TimeDomainSignal\\1", cleanedNames)
+cleanedNames <- gsub("f(Body|Gravity)", "FrequencyDomainSignal\\1", cleanedNames)
+cleanedNames <- gsub("mad", "MedianAbsoluteDeviation", cleanedNames, ignore.case = TRUE)
+cleanedNames <- gsub("mag", "Magnitude", cleanedNames, ignore.case = TRUE)
+cleanedNames <- gsub("Acc", "Acceleration", cleanedNames)
+cleanedNames <- gsub("Gyro", "Gyroscope", cleanedNames)
+cleanedNames <- gsub("Freq\\(\\)", "Frequency", cleanedNames)
+cleanedNames <- gsub("(mean\\(\\)|mean|meanfrequency)", "Mean", cleanedNames, ignore.case = TRUE)
+cleanedNames <- gsub("std\\(\\)", "StandardDeviation", cleanedNames, ignore.case = TRUE)
+
+# move "mean" and "StandardDeviation" to the front
+cleanedNames <- gsub("(\\w*)(mean|StandardDeviation)(\\w*)", "\\2OfThe\\1\\3", cleanedNames, ignore.case = TRUE)
+
+# X|Y|Z -> InTheAxX|Y|Z
+cleanedNames <- gsub("(X|Y|Z)", "InThe\\1Ax", cleanedNames)
+
+# remove syntax error in the angle where it closes a parenthesis leaving a variable outside
+cleanedNames <- gsub("angle\\((\\w+)\\)", "angle(\\1", cleanedNames, ignore.case = TRUE)
+
+# angle(a,b) -> angleBetweenAAndB
+cleanedNames <- gsub("angle\\((\\w+),(\\w+)\\)", "angleBetweenThe\\1AndThe\\2", cleanedNames, ignore.case = TRUE)
+
+# lowercase first character
+cleanedNames <- paste(tolower(substring(cleanedNames, 1,1)), substring(cleanedNames, 2), sep="")
+
+# and finaly, save it back
+names(dt) <- cleanedNames
 
 
 ### CODE BOOK ###

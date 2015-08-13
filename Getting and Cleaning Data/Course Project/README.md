@@ -18,6 +18,9 @@ From the file ```X.txt``` I'm extracting only those columns which label contains
 ## 3: Uses descriptive activity names to name the activities in the data set
 The ```activity_labels.txt``` file contains the activity names. They just need to be stripped by the undersscore and lowercased.
 
-## 4
+## 4:Appropriately labels the data set with descriptive variable names.
+This is about to clean up labels. We have 86 labels and it could be done just manually: one by one. I believe in automatism and therefore I prefer to write some code that can do it for me. The simple idea is to write some simple regular expressions to replaces string so that a label like ```fBodyGyromeanFreq()Z``` will look like ```meanOfTheFrequencyDomainSignalBodyGyroscopeInTheZAx```. Obviously it is not a perfect english, but it is very close and descriptive enough.
+The regular expressions where build based on ```features_info.txt``` and intuition.
+
 ## 5
 ## 6
