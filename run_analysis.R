@@ -118,24 +118,19 @@ codebook <- data.frame(
   stringsAsFactors=FALSE
 )
 
+## add text to a specific field name.
 addDescription <- function(fieldName, value) {
   codebook[codebook$name == fieldName,]$description <<- 
     paste(codebook[codebook$name == fieldName,]$description, value, sep = ". ")
 }
 
+## add description to a couple of fields.
 addDescription("subjectId", "From 1 to 30.")
 addDescription("activity", "It could be one of:\n\t\twalking\n\t\twalking_upstairs\n\t\twalking_downstairs\n\t\tsitting\n \t\tstanding\n\t\tlaying")
 
+## all the other fields are self explaining. They just need to clarify that they
+## are normalized.
 l <- lapply(codebook$description[3:88], function(e) paste(trimws(e), ".Normalized and bounded within [-1,1]"))
 codebook$description[3:88] <- as.character(l)
 
 write.table(codebook, "codebook.md", quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ":\n\t", eol = "\n\n")
-
-#descrip <- c("greendog", "bluecat")
-#explanation <- decrip
-#explanation <- gsub("green", "It is a green ", explanation)
-#explanation <- gsub("blue", "It is a blue ", explanation)
-#codebook <- paste("* ",descrip,"\n",explanation,"\n")
-#write.table(codebook, "codebook.md", quote = FALSE, row.names = FALSE, col.names = FALSE)
-
-### write.table(dt[1:100,],file.path(mergedPath,"ciccio.txt"))
