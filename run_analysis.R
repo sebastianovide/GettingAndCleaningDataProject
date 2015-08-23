@@ -112,8 +112,22 @@ write.table(dtGroupedAndSummarised, file.path(mergedPath, "groupedAndSummarised.
 
 
 ### CODE BOOK ###
-# TODO
-codebook <- data.frame(name = names(dtGroupedAndSummarised), description = gsub("([A-Z])", " \\1", names(dtGroupedAndSummarised)))
+codebook <- data.frame(
+  name = names(dtGroupedAndSummarised), 
+  description = gsub("([A-Z])", " \\1", names(dtGroupedAndSummarised)),
+  stringsAsFactors=FALSE
+)
+
+addDescription <- function(fieldName, value) {
+  codebook[codebook$name == fieldName,]$description <<- 
+    paste(codebook[codebook$name == fieldName,]$description, value, sep = ". ")
+}
+
+addDescription("subjectId", "From 1 to 30.")
+addDescription("activity", "It could be one of:\n\t\twalking\n\t\twalking_upstairs\n\t\twalking_downstairs\n\t\tsitting\n \t\tstanding\n\t\tlaying")
+
+l <- lapply(codebook$description[3:88], function(e) paste(trimws(e), ".Normalized and bounded within [-1,1]"))
+codebook$description[3:88] <- as.character(l)
 
 write.table(codebook, "codebook.md", quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ":\n\t", eol = "\n\n")
 
