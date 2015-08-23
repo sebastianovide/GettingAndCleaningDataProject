@@ -1,3 +1,5 @@
+library(dplyr)
+#library(data.table)
 # Download and unzip the data with:
 #download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", "Dataset.zip")
 
@@ -51,7 +53,7 @@ dt$activity <- activities
 
 # add subject.txt file as subjectNumber column
 subjectsId<-read.table(file.path(mergedPath,"subject.txt"))
-dt$subjectId <- subjectsId
+dt$subjectId <- subjectsId[[1]]
 
 
 ### 3 ### 
@@ -79,7 +81,8 @@ cleanedNames <- gsub("mag", "Magnitude", cleanedNames, ignore.case = TRUE)
 cleanedNames <- gsub("Acc", "Acceleration", cleanedNames)
 cleanedNames <- gsub("Gyro", "Gyroscope", cleanedNames)
 cleanedNames <- gsub("Freq\\(\\)", "Frequency", cleanedNames)
-cleanedNames <- gsub("(mean\\(\\)|mean|meanfrequency)", "Mean", cleanedNames, ignore.case = TRUE)
+cleanedNames <- gsub("meanfrequency", "MeanFrequency", cleanedNames)
+cleanedNames <- gsub("(mean\\(\\)|Mean\\(\\)|mean)", "Mean", cleanedNames)
 cleanedNames <- gsub("std\\(\\)", "StandardDeviation", cleanedNames, ignore.case = TRUE)
 
 # move "mean" and "StandardDeviation" to the front
@@ -99,6 +102,13 @@ cleanedNames <- paste(tolower(substring(cleanedNames, 1,1)), substring(cleanedNa
 
 # and finaly, save it back
 names(dt) <- cleanedNames
+
+### 5 ###
+# From the data set in step 4, creates a second, independent tidy data set with 
+# the average of each variable for each activity and each subject.
+dtGroupedAndSummarised <- group_by(dt, activity, subjectId) %>%
+  summarise_each(funs(mean))
+write.table(dtGroupedAndSummarised, file.path(mergedPath, "groupedAndSummarised.txt"), row.name=FALSE)
 
 
 ### CODE BOOK ###
