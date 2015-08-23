@@ -108,11 +108,15 @@ names(dt) <- cleanedNames
 # the average of each variable for each activity and each subject.
 dtGroupedAndSummarised <- group_by(dt, activity, subjectId) %>%
   summarise_each(funs(mean))
-write.table(dtGroupedAndSummarised, file.path(mergedPath, "groupedAndSummarised.txt"), row.name=FALSE)
+write.table(dtGroupedAndSummarised, file.path(mergedPath, "groupedAndSummarised.txt"), row.names = FALSE)
 
 
 ### CODE BOOK ###
 # TODO
+codebook <- data.frame(name = names(dtGroupedAndSummarised), description = gsub("([A-Z])", " \\1", names(dtGroupedAndSummarised)))
+
+write.table(codebook, "codebook.md", quote = FALSE, row.names = FALSE, col.names = FALSE, sep = ":\n\t", eol = "\n\n")
+
 #descrip <- c("greendog", "bluecat")
 #explanation <- decrip
 #explanation <- gsub("green", "It is a green ", explanation)
